@@ -26,7 +26,7 @@
 ## Description of the Coq content
 
 There are 26 Coq vernacular files, here presented in useful order (based on the [dependency graph](coq/dependency_graph.txt)).
-* *list_utils.v* --- One of the biggest files, all concerning list operations, list permutations, the lifting of relations to lists and segments of the natural numbers -- auxiliary material with use at many places.
+* [`list_utils.v`|coq/list_utils.v] --- One of the biggest files, all concerning list operations, list permutations, the lifting of relations to lists and segments of the natural numbers -- auxiliary material with use at many places.
 * *wf_utils.v* --- The subtle tactics for measure recursion in one or two arguments with a nat-valued measure function -- this is crucial for smooth extraction throughout.
 * *llist.v* --- Some general material on coinductive lists, in particular proven finite ones (including append for those), but also the rotate operation of Okasaki.
 * *wf_example.v* --- the example of `itl2` from which the desired code is extracted
