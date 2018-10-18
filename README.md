@@ -1,6 +1,7 @@
-# BFE
-Breath-First Extraction: Lessons from a Small Exercice in Algorithmic Certification
+# Breath-First Extraction: Lessons from a Small Exercice in Algorithmic Certification
 Coq implementation of breadth-first numbering à la Okasaki and variations thereof
+
+Inside the `coq` directory, just type `make all` or `make extraction.vo` or  `make wf_example.vo`.
 
 There are 26 Coq vernacular files, here presented in useful order (based on the [dependency graph](coq/dependency_graph.txt)).
 * *list_utils.v* --- One of the biggest files, all concerning list operations, list permutations, the lifting of relations to lists and segments of the natural numbers -- auxiliary material with use at many places.
