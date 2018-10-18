@@ -1,7 +1,29 @@
 # Breadth-First Extraction: Lessons from a Small Exercice in Algorithmic Certification
-Coq v8.8.[12] implementation of breadth-first numbering à la Okasaki and variations thereof
 
-Inside the `coq` directory, just type `make all` or `make extraction.vo` or  `make wf_example.vo`.
+##Copyright
+
+```
+(**************************************************************)
+(*   Copyright Dominique Larchey-Wendling [*]                 *)
+(*             Ralph Matthes [+]                              *)
+(*                                                            *)
+(*                             [*] Affiliation LORIA -- CNRS  *)
+(*                             [+] Affiliation IRIT -- CNRS   *)
+(**************************************************************)
+(*      This file is distributed under the terms of the       *)
+(*         CeCILL v2 FREE SOFTWARE LICENSE AGREEMENT          *)
+(**************************************************************)
+```
+## What is this repository for?
+
+* Coq v8.8.[12] implementation of breadth-first numbering à la Okasaki and variations thereof
+
+## How do I use it?
+
+* Inside the `coq` directory, just type `make all` or `make extraction.vo` or  `make wf_example.vo`.
+* You can consult the following pre-print submitted to CPP'19.
+
+## Description of the Coq content
 
 There are 26 Coq vernacular files, here presented in useful order (based on the [dependency graph](coq/dependency_graph.txt)).
 * *list_utils.v* --- One of the biggest files, all concerning list operations, list permutations, the lifting of relations to lists and segments of the natural numbers -- auxiliary material with use at many places.
