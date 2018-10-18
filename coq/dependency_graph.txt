@@ -1,0 +1,41 @@
+list_utils.v:
+wf_utils.v:
+llist.v:
+
+wf_example.v:	wf_utils.v
+
+zip.v: 		list_utils.v
+sorted.v:	list_utils.v
+increase.v:	list_utils.v zip.v sorted.v
+
+bt.v:		list_utils.v
+fifo.v:		bt.v
+
+fifo_triv.v:
+fifo_2lists.v:	wf_utils.v fifo.v
+fifo_3llists.v:	wf_utils.v llist.v fifo.v
+
+dft_std.v:	list_utils sorted bt
+bft_std.v:	list_utils zip sorted increase bt
+dft_bft_compare.v: list_utils sorted bt dft_std bft_std
+
+bft_forest.v:	list_utils wf_utils zip bt bft_std
+bft_inj.v:	list_utils wf_utils bt bft_std bft_forest
+bft_fifo.v:     list_utils wf_utils bt fifo bft_std bft_forest
+
+bfn_spec_rev.v:	list_utils wf_utils bt bft_std bft_forest bft_inj
+bfn_fifo.v:     list_utils wf_utils bt fifo bft_std bft_forest bft_inj
+bfn_trivial.v:	list_utils fifo fifo_triv bfn_fifo
+bfn_level.v:	list_utils wf_utils zip bt bft_std bft_forest bft_inj bfn_trivial
+
+bfr_fifo.v:     list_utils wf_utils bt fifo bft_std bft_forest
+bfr_bfn_fifo.v: list_utils wf_utils bt fifo bft_inj bfn_fifo bfr_fifo
+
+extraction.v:	bt fifo fifo_triv fifo_2lists fifo_3llists bft_std bft_forest bft_fifo bfn_fifo bfn_level bfr_fifo
+
+benchmarks.v:   bt fifo fifo_triv fifo_2lists fifo_3llists bfn_fifo
+
+
+
+
+
