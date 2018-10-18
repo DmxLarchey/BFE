@@ -16,7 +16,7 @@
 ```
 ## What is this repository for?
 
-* Coq v8.8.[12] implementation of breadth-first numbering à la Okasaki and variations thereof
+* Coq v8.8.1 or v8.8.2 implementation of breadth-first numbering à la Okasaki and variations thereof
 
 ## How do I use it?
 
