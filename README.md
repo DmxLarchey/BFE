@@ -1,6 +1,6 @@
 # Breadth-First Extraction: Lessons from a Small Exercice in Algorithmic Certification
 
-##Copyright
+## Copyright
 
 ```
 (**************************************************************)
