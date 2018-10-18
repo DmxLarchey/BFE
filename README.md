@@ -1,4 +1,4 @@
-# Breath-First Extraction: Lessons from a Small Exercice in Algorithmic Certification
+# Breadth-First Extraction: Lessons from a Small Exercice in Algorithmic Certification
 Coq v8.8.[12] implementation of breadth-first numbering à la Okasaki and variations thereof
 
 Inside the `coq` directory, just type `make all` or `make extraction.vo` or  `make wf_example.vo`.
