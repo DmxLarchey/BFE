@@ -24,7 +24,7 @@
 * For convenience, all the OCaml generated files have been copied to the 
   directory [`extracted_ocaml`](extracted_ocaml). These are the very same files as those generated
   by the `make all` command above.
-* You can consult the following [pre-print]() submitted to CPP'19.
+* You can consult the following [pre-print](CPP_2019_paper_28.pdf) submitted to CPP'19.
 
 ## Description of the Coq content
 
