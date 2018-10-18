@@ -57,4 +57,4 @@ End interleave.
 Extract Inductive list => "list" [ "[]" "(::)" ].
 Extraction Inline itl2_full.
 
-Recursive Extraction itl1 itl2.
+Extraction "interleave.ml" itl1 itl2.

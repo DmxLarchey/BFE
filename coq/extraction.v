@@ -34,7 +34,10 @@ Module BFR_triv := BFR_FIFO FIFO_triv.
 Module BFR_2lists := BFR_FIFO FIFO_2lists.
 Module BFR_3llists := BFR_FIFO FIFO_3llists.
 
-
+Extraction "fifo.ml" FIFO_triv FIFO_2lists FIFO_3llists.
+Extraction "bft.ml" bft_std.bft_std bft_forest.bft_forest BFT_triv.bft_fifo.
+Extraction "bfn.ml" BFN_2lists.bfn_fifo bfn_level.bfn_level.
+Extraction "bfr.ml" BFR_3llists.bfr_fifo.
 
 
 
@@ -46,9 +49,9 @@ Recursive Extraction BFR_triv.bfr_fifo BFR_2lists.bfr_fifo BFR_3llists.bfr_fifo.
 
 (*Recursive Extraction BFT_triv.bft_fifo BFN_triv.bfn_fifo  BFR_triv.bfr_fifo. *)
 
-Recursive Extraction BFT_2lists.bft_fifo BFN_3llists.bfn_fifo BFR_triv.bfr_fifo.
+(* Recursive Extraction BFT_2lists.bft_fifo BFN_3llists.bfn_fifo BFR_triv.bfr_fifo.
 Recursive Extraction bfn_level.bfn_level.
-Recursive Extraction bft_forest.bft_forest.
+Recursive Extraction bft_forest.bft_forest. *)
 
 (*
 Recursive Extraction BFT_3llists.bft_fifo

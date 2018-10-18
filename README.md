@@ -21,7 +21,10 @@
 ## How do I use it?
 
 * Inside the `coq` directory, just type `make all` or `make extraction.vo` or  `make wf_example.vo`.
-* You can consult the following pre-print submitted to CPP'19.
+* For convenience, all the OCaml generated files have been copied to the 
+  directory [`extracted_ocaml`](extracted_ocaml). These are the very same files as those generated
+  by the `make all` command above.
+* You can consult the following [pre-print]() submitted to CPP'19.
 
 ## Description of the Coq content
 
