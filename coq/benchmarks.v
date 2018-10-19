@@ -22,7 +22,7 @@ Require Import List Extraction.
 Require Import bt fifo bfn_fifo.
 Require Import fifo_triv fifo_2lists fifo_3llists.
 
-Extraction Language OCaml.
+(* Extraction Language OCaml. *)
 Extract Inductive bool => "bool" [ "true" "false" ].
 Extract Inductive prod => "(*)"  [ "(,)" ].
 Extract Inductive list => "list" [ "[]" "(::)" ].

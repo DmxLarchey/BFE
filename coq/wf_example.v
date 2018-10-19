@@ -44,7 +44,7 @@ Section interleave.
     end).
     + trivial.
     + simpl; omega.
-    + subst; rewrite itl1_eq; trivial.
+    + simpl in Hr; subst; rewrite itl1_eq; trivial.
   Defined.
 
   Definition itl2 l m := proj1_sig (itl2_full l m).

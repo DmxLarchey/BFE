@@ -96,7 +96,7 @@ Section llist.
         match ll as ll' return lfin ll' -> { l | ll' = list_llist l } with
           | lnil      => fun H => exist _ nil _
           | lcons x ll => fun H => let (l',Hl') := loop ll _ in exist _ (x::l') _
-        end Hll); subst; trivial.
+        end Hll); simpl in *; subst; trivial.
       inversion H; trivial.
     Qed.
   

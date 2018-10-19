@@ -112,7 +112,7 @@ Section bfr_fifo.
       all: cycle 1.
 
       + rewrite Hq, Hp, <- H; simpl; omega.
-      + intros E; rewrite E in Hr; apply proj2 in Hr; simpl in Hr.
+      + simpl in Hr; intros E; rewrite E in Hr; apply proj2 in Hr; simpl in Hr.
         rewrite bft_f_fix_0 in Hr; subst.
         generalize (m_bt_ge_1 t); simpl in *; omega.
       + destruct Hr as (Hr_1 & Hr_2); simpl in Hd1.
