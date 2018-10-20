@@ -17,8 +17,8 @@
 ## What is this repository for?
 
 * Coq v8.8.1 or v8.8.2 implementation of breadth-first numbering à la Okasaki and variations thereof
-* It is also possible to compile the project under Coq v8.7.1 but the `Makefile` is not compatible
-  and should be regenerated for v8.7.1 with the command `coq_makefile -f _CoqProject -o Makefile`
+* It is also possible to compile the project under Coq v8.7.* but the `Makefile` is not compatible
+  and should be regenerated for v8.7.* with the command `coq_makefile -f _CoqProject -o Makefile`
 
 ## How do I use it?
 
