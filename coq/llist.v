@@ -9,267 +9,254 @@
 (*         CeCILL v2 FREE SOFTWARE LICENSE AGREEMENT          *)
 (**************************************************************)
 
-Require Import List Arith Omega Wellfounded Extraction.
+Require Import List Arith Omega.
+
+Require Import wf_utils.
 
 Set Implicit Arguments.
 
-Section llist.
+Section lazy_list.
 
-
-  (** An implementation of lazy lists as co-inductive lists/streams
-      with a finiteness predicate in Prop
-
-      Inspired by  G54DTP Dependently Typed Programming.
-                   Introduction to coinductive types.
-                   Venanzio Capretta, March 2011.
-  *)
+  (* Implementation of lazy lists as the subset of co-lists 
+     characterized by a finiteness predicate *)
 
   Variable X : Type.
 
   CoInductive llist : Type :=
-    | lnil: llist
-    | lcons: X -> llist -> llist.
+    | lnil : llist
+    | lcons : X -> llist -> llist.
 
-  Implicit Types (n: nat) (a: X) (ll: llist) (l: list X).
+  Implicit Types (a: X) (s: llist) (l: list X).
 
-  (* We must define an explicit unfold operation. *)
+  Unset Elimination Schemes.
+    
+  Inductive lfin : llist-> Prop :=
+    | lfin_nil :  lfin lnil
+    | lfin_cons : forall a ll, lfin ll -> lfin (lcons a ll).
 
-  Definition lunfold ll : llist :=
-    match ll with
-      | lnil => lnil
-      | lcons a ll' => lcons a ll'
-    end.
- 
-  (* The next function unfolds a lazy list several times:
-     the natural number n says how many.
-  *)
+  Arguments lfin_cons : clear implicits.
 
-  Fixpoint lunfold_many ll n : llist :=
-    match n with
-      | O    => ll
-      | S n => match ll with
-          | lnil      => lnil
-          | lcons a ll => lcons a (lunfold_many ll n)
-          end
-    end.
+  Set Elimination Schemes.
 
-  (* We can prove that the unfolding is equal to the original list. *)
+  Section small_inversions.
 
-  Lemma lunfold_many_eq: forall n ll, ll = lunfold_many ll n.
+    Let shape_inv s := match s with lnil => False | _         => True   end.
+    Let pred_inv s  := match s with lnil => lnil  | lcons x s => s      end.
+    
+    Definition lfin_inv x s (H : lfin (lcons x s)) : lfin s :=
+      match H in lfin s return shape_inv s -> lfin (pred_inv s) with
+        | lfin_nil         => fun E => match E with end
+        | lfin_cons _ _ H1 => fun _ => H1
+      end I.
+
+    Let output_invert s : lfin s -> Prop := 
+      match s as s' return lfin s' -> _ with
+        | lnil      => fun H => lfin_nil = H
+        | lcons x s => fun H => exists H', lfin_cons x s H' = H
+      end.
+
+    Definition lfin_invert s H : @output_invert s H :=
+      match H in lfin s return @output_invert s H with
+        | lfin_nil         => eq_refl
+        | lfin_cons _ _ H' => ex_intro _ H' eq_refl 
+      end.
+
+  End small_inversions.
+
+  (** We show proof irrelevance for lfin by induction/inversion
+      where inversion is obtained by dependent pattern matching 
+
+      Interesting case because lfin is not a decidable predicate
+      but nevertheless has provable PIRR 
+    *)
+
+  Fixpoint lfin_pirr s (H1 : lfin s) : forall H2, H1 = H2.
   Proof.
-    induction n as [ | n IHn ].
-    + reflexivity.
-    + intros [ | x ll ].
-      * reflexivity.
-      * simpl; f_equal; auto.
-  Qed.
+    destruct H1 as [ | x s H1 ]; intros H2.
+    + apply (lfin_invert H2).
+    + destruct (lfin_invert H2) as (H & E).
+      subst; f_equal; apply lfin_pirr.
+  Defined.
 
-  (* Every finite list can be transformed into a lazy list. *)
+  Section lfin_rect.
 
-  Fixpoint list_llist l : llist :=
-    match l with
-      | nil  => lnil
-      | a::l => lcons a (list_llist l)
-    end.
-    
-  Fact list_llist_inj l1 l2 : list_llist l1 = list_llist l2 -> l1 = l2.
-  Proof.
-    revert l2; induction l1 as [ | x l IHl ]; intros [ | y m ]; auto; try discriminate.
-    simpl; intros H; inversion H; f_equal; auto.
-  Qed.
-    
-  Inductive lfin : llist -> Prop :=
-    | lfin_lnil :  lfin lnil
-    | lfin_lcons : forall a ll, lfin ll -> lfin (lcons a ll).
-    
-  Fact lfin_inv a ll : lfin (lcons a ll) -> lfin ll.
-  Proof. inversion 1; assumption. Defined.
+    (** We show dependent recursion principle for lfin implementing
+        what a command like
 
-  Fact lfin_list_llist l : lfin (list_llist l).
-  Proof. induction l; simpl; constructor; trivial. Qed.
+        Scheme lfin_rect := Induction for lfin Sort Type.
 
-  Section llist_list.
+        But Scheme is not smart enough to invent PIRR ...
+        Remark that we use singleton elimination here ... *)
 
-    Let llist_list_rec : forall ll, lfin ll -> { l | ll = list_llist l }.
+    Variable P : forall s, lfin s -> Type.
+
+    Hypothesis HP1 : @P _ lfin_nil.
+    Hypothesis HP2 : forall x s H, @P s H -> P (@lfin_cons x s H).
+
+    Ltac pirr := match goal with |- @P _ ?a -> @P _ ?b => rewrite (@lfin_pirr _ a b); trivial end.
+
+    Fixpoint lfin_rect s H { struct H } : @P s H.
     Proof.
-      refine (fix loop ll Hll { struct Hll } :=
-        match ll as ll' return lfin ll' -> { l | ll' = list_llist l } with
-          | lnil      => fun H => exist _ nil _
-          | lcons x ll => fun H => let (l',Hl') := loop ll _ in exist _ (x::l') _
-        end Hll); simpl in *; subst; trivial.
-      inversion H; trivial.
-    Qed.
-  
-    Definition llist_list ll Hll: list X := proj1_sig (@llist_list_rec ll Hll).
-  
-    Fact llist_list_spec ll Hll : ll = list_llist (@llist_list ll Hll).
-    Proof. apply (proj2_sig (@llist_list_rec ll Hll)). Qed.
-
-  End llist_list.
-  
-  Arguments llist_list : clear implicits.
-
-  Fact llist_list_eq ll (H1 H2: lfin ll) : @llist_list ll H1 = @llist_list ll H2.
-  Proof.
-    apply list_llist_inj; do 2 rewrite <- llist_list_spec; reflexivity.
-  Qed.
-
-  Fact llist_list_fix_0 H : llist_list lnil H = nil.
-  Proof.
-    generalize (llist_list_spec H); simpl.
-    generalize (llist_list _ H).
-    intros [|]; try discriminate; auto.
-  Qed.
-  
-  Fact llist_list_fix_1 x ll (H: lfin (lcons x ll)):
-    llist_list (lcons x ll) H = x::llist_list ll (lfin_inv H).
-  Proof.
-    generalize (llist_list_spec H); simpl.
-    generalize (llist_list _ H).
-    intros [|]; try discriminate.
-    simpl.
-    intros G; inversion G; f_equal; auto.
-    apply list_llist_inj; rewrite <- H2.
-    apply llist_list_spec.
-  Qed.
-
-  Definition lfin_length ll (Hll: lfin ll): nat := length (llist_list ll Hll).
-
-  Arguments lfin_length : clear implicits.
-
-  Fact lfin_length_eq ll (H1 H2: lfin ll) : lfin_length ll H1 = lfin_length ll H2.
-  Proof. unfold lfin_length; f_equal; apply llist_list_eq. Qed.
-  
-  Fact lfin_length_fix_0 (H: lfin lnil): lfin_length lnil H = 0.
-  Proof. unfold lfin_length; rewrite llist_list_fix_0; auto. Qed.
-  
-  Fact lfin_length_fix_1 x ll (H: lfin (lcons x ll)):
-    lfin_length (lcons x ll) H = S (lfin_length ll (lfin_inv H)).
-  Proof. unfold lfin_length; rewrite llist_list_fix_1; auto. Qed.
-  
-End llist.
-
-Arguments lnil {X}.
-Arguments llist_list {X}.
-Arguments lfin_length {X}.
-
-Section Append.
-
-  Variable (X : Type).
-  
-  Implicit Type (l m k : llist X).
-
-  Section def.
-
-    Let llist_app_rec : forall l m (Hl : lfin l) (Hm : lfin m), { k | k = list_llist (llist_list _ Hl ++ llist_list _ Hm) }.
-    Proof.
-      refine (fix loop l m Hl Hm { struct Hl } := _).
-      revert Hl; refine (match l with 
-        | lnil      => fun _  => exist _ m _
-        | lcons x l => fun Hl => let (r,Hr) := loop l m (lfin_inv Hl) Hm in exist _ (lcons x r) _
+      revert H.
+      refine (match s with
+        | lnil      => fun H => _
+        | lcons x s => fun H => _
       end).
-      + rewrite llist_list_fix_0; simpl; apply llist_list_spec.
-      + rewrite llist_list_fix_1; simpl; f_equal; assumption.
+      + generalize HP1; pirr.
+      + generalize (@HP2 x s (lfin_inv H) (@lfin_rect s (lfin_inv H))); pirr.
+    Defined.
+
+  End lfin_rect.
+
+  (* Now we define lazy lists *)
+
+  Definition lazy_list := { s | lfin s }.
+
+  Implicit Type ll : lazy_list.
+
+  (* Constructors *)
+
+  Definition lazy_nil : lazy_list := exist _ _ lfin_nil.
+  Definition lazy_cons a : lazy_list -> lazy_list.
+  Proof.
+    intros (ll & H).
+    exists (lcons a ll).
+    apply lfin_cons, H.
+  Defined.
+
+  (* Injectivity of constructors *)
+
+  Fact lazy_cons_inj a b ll1 ll2 : lazy_cons a ll1 = lazy_cons b ll2 -> a = b /\ ll1 = ll2.
+  Proof.
+    revert ll1 ll2; intros (s1 & H1) (s2 & H2); simpl.
+    intros E; apply f_equal with (f := @proj1_sig _ _) in E; simpl in E.
+    inversion E; subst; split; auto; f_equal.
+    apply lfin_pirr.
+  Qed.
+
+  Fact lazy_nil_cons_discr a ll : lazy_nil <> lazy_cons a ll.
+  Proof. destruct ll; discriminate. Qed.
+
+  (** And a dependent recursion principle similar to list_rect *)
+
+  Section lazy_list_rect.
+
+    Variable P : lazy_list -> Type.
+    
+    Hypothesis (HP0 : P lazy_nil).
+    Hypothesis (HP1 : forall a m, P m -> P (lazy_cons a m)).
+
+    Theorem lazy_list_rect : forall ll, P ll.
+    Proof. 
+      intros (? & H). 
+      induction H as [ | x s H IH ].
+      + apply HP0.
+      + apply HP1 with (1 := IH).
+    Defined.
+
+  End lazy_list_rect.
+
+  (* We have everything to define an isomorphism between list and lazy_list *)
+
+  Section list_lazy_iso.
+
+    Fixpoint list2lazy l :=
+      match l with
+        | nil  => lazy_nil
+        | x::l => lazy_cons x (list2lazy l)
+      end.
+
+    Fact list2lazy_inj l m : list2lazy l = list2lazy m -> l = m.
+    Proof.
+      revert m; induction l as [ | a l IH ]; intros [ | b m ]; simpl; auto.
+      + intros H; exfalso; revert H; apply lazy_nil_cons_discr.
+      + intros H; exfalso; symmetry in H; revert H; apply lazy_nil_cons_discr.
+      + intros H; apply lazy_cons_inj in H; destruct H; f_equal; auto.
     Qed.
 
-    Definition llist_app l m (Hl : lfin l) (Hm : lfin m): llist X := proj1_sig (@llist_app_rec l m Hl Hm).
+    Section lazy2list.
 
-    Fact llist_app_spec l m (Hl : lfin l) (Hm : lfin m) : @llist_app l m Hl Hm = list_llist (llist_list _ Hl ++ llist_list _ Hm).
-    Proof. apply (proj2_sig (@llist_app_rec l m Hl Hm)). Qed.
+      Let lazy2list_rec ll : { l | ll = list2lazy l }.
+      Proof.
+        induction ll as [ | a ll (l & Hl) ] using lazy_list_rect.
+        + exists nil; auto.
+        + exists (a::l); simpl; f_equal; auto.
+      Qed.
 
-  End def.
+      Definition lazy2list ll := proj1_sig (lazy2list_rec ll).
 
-  Arguments llist_app : clear implicits.
+      Fact list2lazy2list ll : ll = list2lazy (lazy2list ll).
+      Proof. apply (proj2_sig (lazy2list_rec ll)). Qed.
 
-End Append.
+    End lazy2list.
+
+    Fact lazy2list2lazy l : l = lazy2list (list2lazy l).
+    Proof. apply list2lazy_inj; rewrite <- list2lazy2list; trivial. Qed.
+
+    (* Fixpoint equations *)
+
+    Fact lazy2list_nil : lazy2list lazy_nil = nil.
+    Proof. apply list2lazy_inj; rewrite <- list2lazy2list; auto. Qed.
+
+    Fact lazy2list_cons a ll : lazy2list (lazy_cons a ll) = a :: lazy2list ll.
+    Proof.
+      apply list2lazy_inj.
+      simpl; repeat rewrite <- list2lazy2list; trivial.
+    Qed.
+
+  End list_lazy_iso.
+
+  Definition lazy_length ll := length (lazy2list ll).
+  
+  Fact lazy_length_nil : lazy_length lazy_nil = 0.
+  Proof. unfold lazy_length; rewrite lazy2list_nil; auto. Qed.
+
+  Fact lazy_length_cons x ll : lazy_length (lazy_cons x ll) = S (lazy_length ll).
+  Proof. unfold lazy_length; rewrite lazy2list_cons; auto. Qed.
+
+End lazy_list.
+
+Arguments lazy_nil {X}.
 
 Section Rotate.
 
-  (* Rotate with lazy lists (with a non-informative "finiteness" predicate 
-     It seems the algorithm manipulates f a as lazy lists and r as a list ... no sure
-     or three lazy lists ? *)
+  (** From "Simple and Efficient Purely Functional Queues and Deques" by Chris Okasaki 
+      See application in file fifo_3llists.v *)
 
   Variable (X : Type).
   
-  Implicit Type (l r m a: llist X).
+  Implicit Type (l r m a : lazy_list X).
   
-  Section def.
+  Let prec l r := lazy_length r = 1 + lazy_length l.
+  Let spec l r a m := lazy2list m = lazy2list l ++ rev (lazy2list r) ++ lazy2list a.
 
-
-    Let prec l (Hl : lfin l) r (Hr : lfin r) : Prop :=
-      lfin_length r Hr = 1 + lfin_length l Hl.
-    Let rspec l (Hl : lfin l) r (Hr : lfin r) a (Ha : lfin a) m: Prop :=
-      m = list_llist (llist_list l Hl ++ rev (llist_list r Hr) ++ llist_list a Ha).
-
-    (** the following definition aims at having as extracted code the function rot on p.587 in Okasaki, 
-              Simple and efficient purely functional queues and deques, JFP 1995 *)
-
-    Let llist_rotate_rec : forall l r a (Hl : lfin l) (Hr : lfin r) (Ha : lfin a),
-        @prec l Hl r Hr -> sig (@rspec l Hl r Hr a Ha).
-    Proof.
-      refine (fix loop l r a Hl Hr Ha { struct Hl } := _). 
-      revert Hr.
-      refine (match r as r' return forall (Hr : lfin r'), @prec l Hl _ Hr  -> sig (@rspec l Hl r' Hr a Ha) with
-        | lnil       => _
-        | lcons y r' => _ 
-      end); intros Hr' H.
-      { exfalso; red in H; rewrite lfin_length_fix_0 in H; discriminate. }
-      revert Hl H.
-      refine (match l as l' return forall (Hl' : lfin l'), @prec l' Hl' _ Hr' -> sig (rspec Hl' Hr' Ha) with
-        | lnil       => _
-        | lcons x l' => _
-      end); intros Hl' H.
-      + exists (lcons y a).
-        red in H |- *; revert H.
-        rewrite llist_list_fix_0, llist_list_fix_1, lfin_length_fix_0, lfin_length_fix_1.
-        destruct r'.
-        * rewrite llist_list_fix_0; simpl. 
-          rewrite <- llist_list_spec; reflexivity.
-        * rewrite lfin_length_fix_1; discriminate.
-      + refine (let (ro,Hro) := loop l' r' (lcons y a) (lfin_inv Hl') (lfin_inv Hr') (lfin_lcons _ Ha) _ in exist _ (lcons x ro) _).
-        * red in H |- *; revert H.
-          do 2 rewrite lfin_length_fix_1; intros; omega.
-        * red in Hro |- *; revert Hro.
-          do 3 rewrite llist_list_fix_1; intros; subst.
-          simpl; rewrite app_ass; simpl; reflexivity.
-    Qed.
-
-    Definition llist_rotate l r a Hl Hr Ha (H: prec Hl Hr): llist X := proj1_sig (@llist_rotate_rec l r a Hl Hr Ha H).
-
-    Fact llist_rotate_spec l r a Hl Hr Ha H : @rspec l Hl r Hr a Ha (@llist_rotate l r a Hl Hr Ha H).
-    Proof. apply (proj2_sig (@llist_rotate_rec l r a Hl Hr Ha H)). Qed.
-
-  End def.
-
-  Arguments llist_rotate : clear implicits.
-
-  Fact lfin_rotate l r a Hl Hr Ha H : lfin (llist_rotate l r a Hl Hr Ha H).
+  Definition lazy_rotate l r : forall a, prec l r -> sig (spec l r a).
   Proof.
-    generalize (llist_rotate_spec Ha H); intros E.
-    rewrite E; apply lfin_list_llist.
-  Qed.
+    induction on l r as loop with measure (lazy_length l); intros a.
+    induction r as [ | y r' _ ] using lazy_list_rect; intros H.
+    + exfalso; red in H; revert H; rewrite lazy_length_nil; intros; omega.
+    + revert H.
+      induction l as [ | x l' _ ] using lazy_list_rect; intros H.
+      * exists (lazy_cons y a); red in H |- *.
+        assert (r' = lazy_nil); [ | subst ].
+        { revert H.
+          induction r' as [ | ? r' ] using lazy_list_rect; auto.
+          do 2 rewrite lazy_length_cons.
+          rewrite lazy_length_nil; simpl; intros; omega. }
+        do 2 rewrite lazy2list_cons, lazy2list_nil; auto.
+      * refine (let (m,Hm) := loop l' r' _ (lazy_cons y a) _ in exist _ (lazy_cons x m) _).
+        - rewrite lazy_length_cons; omega.
+        - red in H |- *; do 2 rewrite lazy_length_cons in H; omega.
+        - red in H, Hm |- *.
+          repeat rewrite lazy2list_cons.
+          rewrite Hm, lazy2list_cons; simpl.
+          rewrite app_ass; auto.
+  Defined.
 
-  Fact llist_rotate_eq l r a Hl Hr Ha H : llist_list _ (@lfin_rotate l r a Hl Hr Ha H) = llist_list l Hl ++ rev (llist_list r Hr) ++ llist_list a Ha.
-  Proof.
-    apply list_llist_inj.
-    rewrite <- (@llist_rotate_spec l r a Hl Hr Ha H).
-    generalize (llist_rotate l r a Hl Hr Ha H) (lfin_rotate Hl Hr Ha H).
-    symmetry; apply llist_list_spec.
-  Qed.
-
-  Fact llist_rotate_length l r a Hl Hr Ha H : lfin_length _ (@lfin_rotate l r a Hl Hr Ha H) = lfin_length _ Hl + lfin_length _ Hr + lfin_length _ Ha.
-  Proof.
-    unfold lfin_length.
-    rewrite llist_rotate_eq.
-    do 2 rewrite app_length.
-    rewrite rev_length; omega.
-  Qed.
- 
 End Rotate.
 
-(* Recursive Extraction llist_list list_llist llist_app llist_rotate.
+Arguments lazy_rotate {X}.
 
-Check llist_rotate.
-Check llist_rotate_spec.
+Extraction Inline lfin_rect lazy_nil lazy_cons lazy_list_rect.
 
-*)
+ 
