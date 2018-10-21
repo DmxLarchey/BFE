@@ -39,56 +39,57 @@ and 'x __llist =
 | Lnil
 | Lcons of 'x * 'x llist
 
-(** val llist_list : 'a1 llist -> 'a1 list **)
+type 'x lazy_list = 'x llist
 
-let rec llist_list ll =
+(** val lazy2list : 'a1 lazy_list -> 'a1 list **)
+
+let rec lazy2list s =
   match Lazy.force
-  ll with
+  s with
   | Lnil -> []
-  | Lcons (x, ll0) -> x::(llist_list ll0)
+  | Lcons (x, s0) -> x::(lazy2list s0)
 
-(** val llist_rotate : 'a1 llist -> 'a1 llist -> 'a1 llist -> 'a1 llist **)
+(** val lazy_rotate :
+    'a1 lazy_list -> 'a1 lazy_list -> 'a1 lazy_list -> 'a1 lazy_list **)
 
-let rec llist_rotate l r a =
+let rec lazy_rotate u v a =
   match Lazy.force
-  r with
+  v with
   | Lnil -> assert false (* absurd case *)
-  | Lcons (y, r') ->
+  | Lcons (x, s) ->
     (match Lazy.force
-     l with
-     | Lnil -> lazy (Lcons (y, a))
-     | Lcons (x, l') ->
-       lazy (Lcons (x, (llist_rotate l' r' (lazy (Lcons (y, a)))))))
+     u with
+     | Lnil -> lazy (Lcons (x, a))
+     | Lcons (x0, s0) ->
+       lazy (Lcons (x0, (lazy_rotate s0 s (lazy (Lcons (x, a)))))))
 
 module FIFO_3llists =
  struct
-  type 'x fifo = (('x llist*'x llist)*'x llist)
+  type 'x fifo = (('x lazy_list*'x lazy_list)*'x lazy_list)
 
   (** val f2l : 'a1 fifo -> 'a1 list **)
 
   let f2l = function
-  | p,_ -> let l,r = p in app (llist_list l) (rev (llist_list r))
+  | p,_ -> let l,r = p in app (lazy2list l) (rev (lazy2list r))
 
   (** val empty : 'a1 fifo **)
 
   let empty =
     ((lazy Lnil),(lazy Lnil)),(lazy Lnil)
 
-  (** val make : 'a1 llist -> 'a1 llist -> 'a1 llist -> 'a1 fifo **)
+  (** val make :
+      'a1 lazy_list -> 'a1 lazy_list -> 'a1 lazy_list -> 'a1 fifo **)
 
   let make l r l' =
     match Lazy.force
     l' with
-    | Lnil -> let l'' = llist_rotate l r (lazy Lnil) in (l'',(lazy Lnil)),l''
-    | Lcons (_, l'') -> (l,r),l''
+    | Lnil -> let s = lazy_rotate l r (lazy Lnil) in (s,(lazy Lnil)),s
+    | Lcons (_, s) -> (l,r),s
 
   (** val enq : 'a1 fifo -> 'a1 -> 'a1 fifo **)
 
-  let enq q =
-    let fifo_enq_val = fun q0 x ->
-      let p,x0 = q0 in let l,r = p in make l (lazy (Lcons (x, r))) x0
-    in
-    (fun x -> fifo_enq_val q x)
+  let enq q x =
+    let p,x0 = q in let l,r = p in make l (lazy (Lcons (x, r))) x0
 
   (** val deq : 'a1 fifo -> ('a1*'a1 fifo) **)
 
@@ -98,15 +99,15 @@ module FIFO_3llists =
     (match Lazy.force
      l with
      | Lnil -> assert false (* absurd case *)
-     | Lcons (x0, l0) -> x0,(make l0 r x))
+     | Lcons (x0, s) -> x0,(make s r x))
 
   (** val void : 'a1 fifo -> bool **)
 
   let void = function
   | p,_ ->
-    let l0,_ = p in
+    let l,_ = p in
     (match Lazy.force
-     l0 with
+     l with
      | Lnil -> true
      | Lcons (_, _) -> false)
  end

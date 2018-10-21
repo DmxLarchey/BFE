@@ -43,19 +43,22 @@ and 'x __llist =
 | Lnil
 | Lcons of 'x * 'x llist
 
-val llist_list : 'a1 llist -> 'a1 list
+type 'x lazy_list = 'x llist
 
-val llist_rotate : 'a1 llist -> 'a1 llist -> 'a1 llist -> 'a1 llist
+val lazy2list : 'a1 lazy_list -> 'a1 list
+
+val lazy_rotate :
+  'a1 lazy_list -> 'a1 lazy_list -> 'a1 lazy_list -> 'a1 lazy_list
 
 module FIFO_3llists :
  sig
-  type 'x fifo = (('x llist*'x llist)*'x llist)
+  type 'x fifo = (('x lazy_list*'x lazy_list)*'x lazy_list)
 
   val f2l : 'a1 fifo -> 'a1 list
 
   val empty : 'a1 fifo
 
-  val make : 'a1 llist -> 'a1 llist -> 'a1 llist -> 'a1 fifo
+  val make : 'a1 lazy_list -> 'a1 lazy_list -> 'a1 lazy_list -> 'a1 fifo
 
   val enq : 'a1 fifo -> 'a1 -> 'a1 fifo
 

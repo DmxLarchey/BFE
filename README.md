@@ -17,8 +17,8 @@
 ## What is this repository for?
 
 * Coq v8.8.1 or v8.8.2 implementation of breadth-first numbering à la Okasaki and variations thereof
-* It is also possible to compile the project under Coq v8.7.1 but the `Makefile` is not compatible
-  and should be regenerated for v8.7.1 with the command `coq_makefile -f _CoqProject -o Makefile`
+* It is also possible to compile the project under Coq v8.7.* but the `Makefile` is not compatible
+  and should be regenerated for v8.7.* with the command `coq_makefile -f _CoqProject -o Makefile`
 
 ## How do I use it?
 
@@ -30,7 +30,8 @@
 
 ## Description of the Coq content
 
-There are 26 Coq vernacular files, here presented in useful order (based on the [dependency graph](coq/dependency_graph.txt)).
+There are 26 Coq vernacular files, here presented in useful order (based on the [dependency graph](coq/dependency_graph.txt)). According to `coqwc` the whole code comprises a total of around 2500 lines of code: around 1130 loc for specifications, 1230 loc for proofs and 300 lines for comments.
+  
 * [`list_utils.v`](coq/list_utils.v) --- One of the biggest files, all concerning list operations, list permutations, the lifting of relations to lists and segments of the natural numbers -- auxiliary material with use at many places.
 * [`wf_utils.v`](coq/wf_utils.v) --- The subtle tactics for measure recursion in one or two arguments with a nat-valued measure function -- this is crucial for smooth extraction throughout.
 * [`llist.v`](coq/llist.v) --- Some general material on coinductive lists, in particular proven finite ones (including append for those), but also the rotate operation of Okasaki.
