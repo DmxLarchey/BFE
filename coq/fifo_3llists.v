@@ -25,7 +25,7 @@ Section fifo_three_lazy_lists.
   (** From "Simple and Efficient Purely Functional Queues and Deques" by Chris Okasaki 
           Journal of Functional Programming 5(4):583-592
 
-      this implements and prove the spec from page 587 with lazy lists 
+      this implements and proves the spec from page 587 with lazy lists
       with invariant (l,r,l') : lazy_length l' + lazy_length r = lazy_length l
 
       let rec lazy_rotate l r a := match r with
