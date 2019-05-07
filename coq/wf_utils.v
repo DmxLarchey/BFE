@@ -99,19 +99,26 @@ Tactic Notation "induction" "on" hyp(x) "as" ident(IH) "with" "measure" uconstr(
        | unfold rel; apply wf_inverse_image, lt_wf ]
      end.
 
-Tactic Notation "induction" "on" hyp(x) hyp(y) "as" ident(IH) "with" "measure" uconstr(f) :=
+Tactic Notation "induction" "on" hyp(x) hyp(y) "as" ident(IH) "with"
+"measure" uconstr(f) :=
   generalize I; intro IH;
-  let mes := fresh "measure" in let rel := fresh "relation" in let loop := fresh "loop" in
-  let u := fresh "u" in let u' := fresh x in let Hu := fresh "Hu" in 
-  let v := fresh "v" in let v' := fresh y in let Hv := fresh "Hv" 
-  in clear IH; 
+  let mes  := fresh "measure" in 
+  let rel  := fresh "relation" in 
+  let loop := fresh "loop" in
+  let u := fresh "u" in 
+  let u' := fresh x in 
+  let Hu := fresh "Hu" in
+  let v := fresh "v" in 
+  let v' := fresh y in 
+  let Hv := fresh "Hv"
+  in clear IH;
      define mes of x y as (f : nat);
      set (rel u v := mes (fst u) (snd u) < mes (fst v) (snd v)); unfold fst, snd in rel;
      pattern x, y; match goal with
-       |- ?T _ _ => 
+       |- ?T _ _ =>
        refine ((fix loop u v (Hu : Acc rel (u,v)) { struct Hu } : T u v := _) x y _);
        [ assert (forall u' v', rel (u',v') (u,v) -> T u' v') as IH;
-         [ intros u' v' Hv; apply (loop u' v'), (Acc_inv Hu), Hv 
+         [ intros u' v' Hv; apply (loop u' v'), (Acc_inv Hu), Hv
          | unfold rel, mes in *; clear mes rel Hu loop x y; rename u into x; rename v into y ]
        | unfold rel; apply wf_inverse_image, lt_wf ]
      end.
