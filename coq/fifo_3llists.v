@@ -29,9 +29,9 @@ Section fifo_three_lazy_lists.
       with invariant (l,r,l') : lazy_length l' + lazy_length r = lazy_length l
 
       let rec lazy_rotate l r a := match r with
-        | lcons y r -> match l with
-          | lnil      -> lcons y a
-          | lcons x l -> lcons x (lazy_rotate l' r' (lcons y a))
+        | lcons y r' -> match l with
+          | lnil       -> lcons y a
+          | lcons x l' -> lcons x (lazy_rotate l' r' (lcons y a))
 
       let empty = (lnil,lnil,lnil)
 
