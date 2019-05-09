@@ -15,7 +15,7 @@
 
     1) Equations provides a framework where
        term are easy to define and the "simp" tactic
-       gives the equations the you want BUT
+       gives the equations you want BUT
        extraction contains parasitic structures
        which are perhaps impossible to get rid of.
 
