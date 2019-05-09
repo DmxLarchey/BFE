@@ -1,7 +1,7 @@
 list_utils.v:
 wf_utils.v:
 
-llist.v: wf_utils.v
+llist.v:	wf_utils.v
 interleave.v:	wf_utils.v
 
 zip.v: 		list_utils.v
