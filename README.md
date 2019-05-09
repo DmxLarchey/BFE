@@ -1,4 +1,4 @@
-# Breadth-First Extraction: Lessons from a Small Exercice in Algorithmic Certification
+# Certification of Breadth-First algorithms by Extraction
 
 ## Copyright
 
