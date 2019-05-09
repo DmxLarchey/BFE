@@ -36,7 +36,7 @@ There are 26 Coq vernacular files, here presented in useful order (based on the 
 * [`wf_utils.v`](coq/wf_utils.v) --- The subtle tactics for measure recursion in one or two arguments with a nat-valued measure function -- this is crucial for smooth extraction throughout.
 * [`llist.v`](coq/llist.v) --- Some general material on coinductive lists, in particular proven finite ones (including append for those), but also the rotate operation of Okasaki.
 * [`wf_example.v`](coq/wf_example.v) --- the example of `itl2` from which the desired code is extracted
-* [`interleave.v`](coq/interleave.v) --- the example of `interleave` with three different methods
+* [`interleave.v`](coq/interleave.v) --- the example of `interleave` with three different methods (needs Coq v8.9 with [`Equations`](http://mattam82.github.io/Coq-Equations))
 * [`zip.v`](coq/zip.v) --- zipping with a rich specification and relations with concatenation -- just auxiliary material
 * [`sorted.v`](coq/sorted.v) --- consequences of a list being sorted, in particular absence of duplicates in case of strict orders -- auxiliary material.
 * [`increase.v`](coq/increase.v) --- small auxiliary file for full spec. of breadth-first traversal
