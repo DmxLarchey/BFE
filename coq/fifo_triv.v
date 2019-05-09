@@ -15,7 +15,7 @@ Require Import fifo.
 Set Implicit Arguments.
 
 (* We provide a trivial implementation of FIFO as lists 
-   satisfying the axioms in fifo_axm.v *)
+   satisfying the axioms in fifo.v *)
 
 Module FIFO_triv <: FIFO.
 

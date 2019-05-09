@@ -16,7 +16,7 @@ Require Import wf_utils llist fifo.
 Set Implicit Arguments.
 
 (* We provide an implementation of FIFO as a triple of lazy lists 
-   satisfying the axioms in fifo_axm.v *)
+   satisfying the axioms in fifo.v *)
 
 Module FIFO_3llists <: FIFO.
 
