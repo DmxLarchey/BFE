@@ -28,7 +28,7 @@
 * For convenience, all the OCaml generated files have been copied to the 
   directory [`extracted_ocaml`](extracted_ocaml). These are the very same files as those generated
   by the `make all` command above.
-* You can consult the following [pre-print](https://members.loria.fr/DLarchey/files/papers/) currently under review.
+* You can consult the following [pre-print](https://members.loria.fr/DLarchey/files/papers/) (under submission).
 
 ## Description of the Coq content
 
