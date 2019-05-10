@@ -169,4 +169,3 @@ module FIFO_3llists =
      | Lnil -> true
      | Lcons (_, _) -> false)
  end
-

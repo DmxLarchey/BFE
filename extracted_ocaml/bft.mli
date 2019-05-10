@@ -66,4 +66,3 @@ module BFT_triv :
 
   val bft_fifo : 'a1 bt -> 'a1 list
  end
-

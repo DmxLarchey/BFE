@@ -66,4 +66,3 @@ module FIFO_3llists :
 
   val void : 'a1 fifo -> bool
  end
-

@@ -127,4 +127,3 @@ module BFT_FIFO =
  end
 
 module BFT_triv = BFT_FIFO(FIFO_triv)
-

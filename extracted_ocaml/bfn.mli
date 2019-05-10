@@ -74,4 +74,3 @@ module BFN_2lists :
 
   val bfn_fifo : 'a1 bt -> int bt
  end
-

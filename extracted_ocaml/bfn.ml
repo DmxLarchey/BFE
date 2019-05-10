@@ -161,4 +161,3 @@ let bfn_level t =
   | t'::_ -> t'
 
 module BFN_2lists = BFN_FIFO(FIFO_2lists)
-
