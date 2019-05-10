@@ -1,4 +1,15 @@
-(** DLW Small example of interleave to compare
+(**************************************************************)
+(*   Copyright Dominique Larchey-Wendling [*]                 *)
+(*             Ralph Matthes [+]                              *)
+(*                                                            *)
+(*                             [*] Affiliation LORIA -- CNRS  *)
+(*                             [+] Affiliation IRIT -- CNRS   *)
+(**************************************************************)
+(*      This file is distributed under the terms of the       *)
+(*         CeCILL v2 FREE SOFTWARE LICENSE AGREEMENT          *)
+(**************************************************************)
+
+(** Small example of interleave to compare
     our tailored fixpoint technique with
     "Program Fixpoint" and "Equations"
 
