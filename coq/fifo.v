@@ -25,3 +25,4 @@ Module Type FIFO.
   Notation fifo_lsum := ((fun X (q : fifo (bt X)) => lsum (f2l q)) _).
 
 End FIFO.
+

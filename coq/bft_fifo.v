@@ -97,3 +97,4 @@ End bft_fifo.
 (* Check bft_fifo_spec. *)
 
 End BFT_FIFO.
+

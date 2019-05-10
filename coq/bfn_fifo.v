@@ -276,3 +276,4 @@ Check bfn_fifo_spec_2.
 Check bfn_fifo_spec_3. *)
 
 End BFN_FIFO.
+

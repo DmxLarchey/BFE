@@ -16,3 +16,4 @@ Module BFN_triv := BFN_FIFO FIFO_triv.
 Definition bfn_f := BFN_triv.bfn_f_fifo.
 
 Arguments bfn_f {X}.
+

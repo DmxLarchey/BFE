@@ -313,7 +313,7 @@ Section breadth_first_traversal.
     Proof. apply g_niv_bft_f, g_niv_niveaux. Qed.
  
     Theorem bft_forest_eq_bft_std t : bft_forest t = bft_std t.
-    Proof. 
+    Proof.
       apply g_bft_f_fun with (1 := bft_f_spec _).
       apply g_niv_bft_f, g_niv_niveaux.
     Qed.
@@ -329,3 +329,4 @@ Proof.
   unfold is_bfn_from.
   rewrite is_seq_from_spec, bft_f_length; tauto.
 Qed.
+

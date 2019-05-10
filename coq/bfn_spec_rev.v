@@ -142,3 +142,4 @@ Section bfn_SC. (* sufficient conditions, synthesis *)
   Qed.
 
 End bfn_SC.
+

@@ -37,3 +37,4 @@ Module BFR_BFN_FIFO (Q: FIFO).
   Qed.
 
 End BFR_BFN_FIFO.
+

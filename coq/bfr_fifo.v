@@ -148,3 +148,4 @@ Check bfr_fifo_spec_2.
 *)
 
 End BFR_FIFO.
+
