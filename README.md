@@ -32,7 +32,7 @@
 
 ## Description of the Coq content
 
-There are approximately two dozen Coq vernacular files, here presented in useful order (based on the [dependency graph](coq/dependency_graph.txt)). According to `coqwc` the whole code comprises a total of around 2650 lines of code: around 1300 loc for specifications, 1350 loc for proofs (and 350 lines for comments).
+There are approximately two dozen Coq vernacular files, here presented in useful order (based on the [dependency graph](coq/dependency_graph.txt)). According to `coqwc` the whole code comprises a total of around 2650 lines of code: around 1200 loc for specifications, 1250 loc for proofs (and 350 lines for comments).
   
 * [`list_utils.v`](coq/list_utils.v) --- One of the biggest files, all concerning list operations, list permutations, the lifting of relations to lists and segments of the natural numbers -- auxiliary material with use at many places.
 * [`wf_utils.v`](coq/wf_utils.v) --- The subtle tactics for measure recursion in one or two arguments with a nat-valued measure function -- this is crucial for smooth extraction throughout.
