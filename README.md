@@ -16,9 +16,11 @@
 ```
 ## What is this repository for?
 
-* Coq v8.8.1 or v8.8.2 implementation of breadth-first numbering à la Okasaki and variations thereof
-* It is also possible to compile the project under Coq v8.7.* but the `Makefile` is not compatible
-  and should be regenerated for v8.7.* with the command `coq_makefile -f _CoqProject -o Makefile`
+* Coq v8.8 or v8.9 implementations of breadth-first numbering à la Okasaki and variations thereof
+* It is also possible to compile the project under Coq v8.7 but the `Makefile` is not compatible
+  and should be regenerated for v8.7 with the command `coq_makefile -f _CoqProject -o Makefile`
+* Also notice that the single file [`interleave.v`](coq/interleave.v) below needs the latest
+  [`Equations` package v1.2](http://mattam82.github.io/Coq-Equations) to compile properly.
 
 ## How do I use it?
 
@@ -26,11 +28,11 @@
 * For convenience, all the OCaml generated files have been copied to the 
   directory [`extracted_ocaml`](extracted_ocaml). These are the very same files as those generated
   by the `make all` command above.
-* You can consult the following [pre-print](https://members.loria.fr/DLarchey/files/papers/BFE_CPP19.pdf) submitted to CPP'19.
+* You can consult the following [pre-print](https://members.loria.fr/DLarchey/files/papers/) currently under review.
 
 ## Description of the Coq content
 
-There are 26 Coq vernacular files, here presented in useful order (based on the [dependency graph](coq/dependency_graph.txt)). According to `coqwc` the whole code comprises a total of around 2500 lines of code: around 1180 loc for specifications, 1260 loc for proofs (and 330 lines for comments).
+There between 25-30 Coq vernacular files, here presented in useful order (based on the [dependency graph](coq/dependency_graph.txt)). According to `coqwc` the whole code comprises a total of around 2650 lines of code: around 1300 loc for specifications, 1350 loc for proofs (and 350 lines for comments).
   
 * [`list_utils.v`](coq/list_utils.v) --- One of the biggest files, all concerning list operations, list permutations, the lifting of relations to lists and segments of the natural numbers -- auxiliary material with use at many places.
 * [`wf_utils.v`](coq/wf_utils.v) --- The subtle tactics for measure recursion in one or two arguments with a nat-valued measure function -- this is crucial for smooth extraction throughout.
