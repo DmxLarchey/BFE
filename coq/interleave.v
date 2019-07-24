@@ -133,7 +133,7 @@ Section interleave_trials.
     Proof. trivial. Qed.
 
     Fact itl_eqs_fix_1 x l m : itl_eqs (x::l) m = x::itl_eqs m l.
-    Proof. simp itl_eqs. Qed.
+    Proof. simp itl_eqs; trivial. Qed.
 
     Fact itl_eqs_triv l m : itl_eqs l m = itl_triv l m.
     Proof.
