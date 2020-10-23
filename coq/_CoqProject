@@ -37,3 +37,5 @@ extraction.v
 
 benchmarks.v
 interleave.v
+
+cofix.v
